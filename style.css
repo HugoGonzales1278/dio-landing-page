@@ -1,0 +1,426 @@
+ /* ══════════════════════════════════════════
+       TOKENS & TEMAS
+    ══════════════════════════════════════════ */
+    :root {
+      --primary:          #cf0f0f;
+      --primary-contrast: #ffffff;
+      --secondary:        #ff5733;
+      --field-bg:         #000000;
+    }
+
+    .light-theme {
+      --page-bg:       linear-gradient(180deg, #ffffff 0%, #ffffff 65%, rgba(255,255,255,.75) 100%);
+      --header-bg:     #e3e3e3;
+      --text:          #000000;
+      --font-display:  "Archivo", sans-serif;
+      --footer-bg:     #b5bbbf;
+      --invert:        invert(0);
+
+      /* personagens */
+      --kids-color:    #000000;
+      --monster-color: #cccccc;
+      --kids-src:      url("../src/kids-on-the-bike.svg");
+      --monster-src:   url("../src/inverted-world-monster.svg");
+    }
+
+    .dark-theme {
+      --page-bg:       linear-gradient(180deg, #050000 0%, #130404 65%, rgba(19,1,1,.75) 100%);
+      --header-bg:     #220f0f;
+      --text:          #ffffff;
+      --font-display:  "Rubik Glitch", sans-serif;
+      --footer-bg:     #000000;
+      --invert:        invert(1);
+      --primary:       #ff5733;
+      --secondary:     #cf0f0f;
+
+      /* personagens */
+      --kids-color:    rgba(255,255,255,0.12);
+      --monster-color: rgba(255,255,255,0.08);
+      --kids-src:      url("../src/kids-on-the-bike.svg");
+      --monster-src:   url("../src/inverted-world-monster.svg");
+    }
+
+    /* ══════════════════════════════════════════
+       RESET
+    ══════════════════════════════════════════ */
+    *, *::before, *::after {
+      margin: 0; padding: 0;
+      box-sizing: border-box;
+      transition: background-color .5s ease, color .5s ease,
+                  border-color .5s ease, filter .5s ease,
+                  transform .6s cubic-bezier(.68,-.55,.27,1.55);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--page-bg);
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      overflow-x: hidden;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); }
+    h2 { font-size: clamp(1.6rem, 4vw, 2.5rem); }
+
+    p { line-height: 1.7; font-size: 1rem; font-family: 'Archivo', sans-serif; }
+
+    button {
+      font-family: 'Bebas Neue', cursive;
+      cursor: pointer;
+    }
+
+    .invert-element { filter: var(--invert); }
+
+    /* ══════════════════════════════════════════
+       CURSOR PERSONALIZADO
+    ══════════════════════════════════════════ */
+    body { cursor: crosshair; }
+
+    .cursor-ring {
+      position: fixed; top: 0; left: 0;
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1px solid rgba(204,0,0,.5);
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: transform .12s ease-out;
+    }
+
+    /* ══════════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════════ */
+    header {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background-color: var(--header-bg);
+      text-align: center;
+      padding: 2rem;
+    }
+
+    /* floresta de fundo do header */
+    header::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: url("../src/florest.webp") center 90% / cover no-repeat;
+      filter: saturate(0);
+      opacity: .15;
+      pointer-events: none;
+    }
+
+    .header-content {
+      position: relative; z-index: 3;
+      max-width: 700px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .header-content img.logo {
+      width: 80%;
+      max-width: 320px;
+    }
+
+    #switch-theme-button {
+      background: transparent;
+      border: 3px solid var(--primary);
+      color: var(--primary);
+      padding: 1rem 2.5rem;
+      font-size: 1.3rem;
+      letter-spacing: .15em;
+      position: relative;
+      overflow: hidden;
+    }
+    #switch-theme-button::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--primary);
+      transform: translateX(-100%);
+      transition: transform .4s cubic-bezier(.23,1,.32,1);
+      z-index: -1;
+    }
+    #switch-theme-button:hover::before { transform: translateX(0); }
+    #switch-theme-button:hover { color: #000; }
+
+    /* ══════════════════════════════════════════
+       WORLD STAGE — personagens no header
+       Estado NORMAL   : kids em cima | monstro embaixo (scaleY-1)
+       Estado INVERTIDO: monstro em cima (scaleY-1 → normal) | kids embaixo (scaleY-1)
+    ══════════════════════════════════════════ */
+    #world-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 340px;
+      margin: 0px;
+      padding: 0px;
+    }
+
+    .world-slot {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 170px;
+      overflow: visible;
+      margin: 0px;
+      padding: 0px;
+    }
+
+    .world-slot img {
+      width: 280px;
+      top: -3px;
+      margin: 0px;
+      padding: 0px;
+    }
+
+    /* Estado padrão (mundo normal) */
+    #kids-img    { transform: scaleY(1); margin: auto; }
+    #monster-img { transform: scaleY(-1); margin: auto;}   /* monstro nasce espelhado embaixo */
+
+    /* Mundo invertido: kids desce espelhado, monstro sobe normal */
+    #kids-img.invertido    { transform: scaleY(-1); filter: hue-rotate(180deg) brightness(.75) saturate(1.4); margin: auto;}
+    #monster-img.invertido { transform: scaleY(1);  filter: none; margin: auto; }
+
+    /* Indicador de mundo */
+    .world-indicator {
+      font-size: .65rem;
+      letter-spacing: .2em;
+      color: var(--primary);
+      opacity: .7;
+    }
+
+    /* ══════════════════════════════════════════
+       MAIN
+    ══════════════════════════════════════════ */
+    main {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    main::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--page-bg) no-repeat;
+      background-size: cover;
+      z-index: -1;
+    }
+
+    section {
+      width: 100%;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .section-texts { flex: 1 1 400px; }
+
+    /* ══════════════════════════════════════════
+       SEÇÃO — MUNDO INVERTIDO
+    ══════════════════════════════════════════ */
+    #section-inverted-world img {
+      flex: 1 1 400px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.3);
+    }
+
+    /* ══════════════════════════════════════════
+       SEÇÃO — TRAILER
+    ══════════════════════════════════════════ */
+    .video-frame {
+      flex: 1 1 400px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0,0,0,.4);
+      background: var(--field-bg);
+    }
+    .video-frame iframe {
+      width: 100%;
+      aspect-ratio: 16/9;
+      height: auto;
+      display: block;
+    }
+
+    /* ══════════════════════════════════════════
+       SEÇÃO — GALERIA
+    ══════════════════════════════════════════ */
+    #section-gallery .container {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .gallery-list {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      list-style: none;
+      margin-top: 1.5rem;
+    }
+
+    .gallery-item {
+      flex: 1 1 200px;
+      max-width: 280px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,.25);
+    }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-item:hover { transform: translateY(-8px); }
+
+    /* ══════════════════════════════════════════
+       SEÇÃO — FORMULÁRIO D&D
+    ══════════════════════════════════════════ */
+    #section-form .container {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .form-wrapper {
+      width: 100%;
+      max-width: 580px;
+      margin-top: 1.5rem;
+    }
+
+    .form-wrapper h3 {
+      font-family: 'Archivo', sans-serif;
+      font-size: 1.2rem;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+    .form-wrapper h3 span { color: var(--primary); font-weight: 700; }
+
+    .form-box {
+      background: var(--field-bg);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.5);
+      color: var(--primary-contrast);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      text-align: left;
+      font-family: 'Archivo', sans-serif;
+    }
+
+    form label { font-weight: 600; font-size: .9rem; }
+
+    form input,
+    form textarea {
+      padding: .8rem;
+      border: 2px solid transparent;
+      border-radius: 6px;
+      font-size: 1rem;
+      background: rgba(255,255,255,.08);
+      color: var(--primary-contrast);
+      width: 100%;
+      font-family: 'Archivo', sans-serif;
+    }
+    form input:focus,
+    form textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: rgba(255,255,255,.12);
+    }
+
+    form button[type="submit"] {
+      background: var(--primary);
+      color: var(--primary-contrast);
+      border: none;
+      padding: 1rem;
+      font-size: 1.2rem;
+      letter-spacing: .1em;
+      border-radius: 6px;
+      margin-top: .5rem;
+    }
+    form button[type="submit"]:hover { background: var(--secondary); }
+
+    .form-msg {
+      margin-top: 1.2rem;
+      padding: .8rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-family: 'Archivo', sans-serif;
+      display: none;
+    }
+    .form-msg.success { background: rgba(0,200,81,.12); color: #00c851; display: block; }
+    .form-msg.error   { background: rgba(255,87,51,.12); color: var(--primary); display: block; }
+
+    /* ══════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════ */
+    footer {
+      text-align: center;
+      padding: 2.5rem 2rem;
+      background: var(--footer-bg);
+      color: var(--text);
+      font-size: .8rem;
+      letter-spacing: .1em;
+    }
+    footer img {
+      max-width: 140px;
+      margin: 1rem auto 0;
+      filter: var(--invert);
+    }
+
+    /* ══════════════════════════════════════════
+       EFEITO DE INVERSÃO GLOBAL (overlay)
+    ══════════════════════════════════════════ */
+    #invert-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      pointer-events: none; opacity: 0;
+      background: radial-gradient(ellipse at center, #500000 0%, #000 100%);
+      mix-blend-mode: multiply;
+      transition: opacity .8s ease;
+    }
+    body.dark-theme #invert-overlay { opacity: .35; }
+
+    /* ══════════════════════════════════════════
+       FLICKER LIGHT — efeito ambiente no header
+    ══════════════════════════════════════════ */
+    .flickering-light {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(180,0,0,.06) 0%, transparent 70%);
+      animation: flicker 4s steps(1) infinite;
+    }
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 22%, 24%, 55% { opacity: 0; }
+    }
+
+    /* ══════════════════════════════════════════
+       RESPONSIVIDADE
+    ══════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .container { padding: 3rem 1.2rem; }
+      .world-slot img { width: 200px; }
+      .world-slot { height: 130px; }
+    }
