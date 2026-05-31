@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mundo Invertido — Stranger Things</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Rubik+Glitch&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="light-theme" aria-label="O site está usando o tema claro">
+
+  <!-- overlay de inversão (efeito visual) -->
+  <div id="invert-overlay"></div>
+
+  <!-- cursor personalizado -->
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ══════════ HEADER ══════════ -->
+  <header aria-label="Cabeçalho da página">
+
+    <div class="flickering-light"></div>
+
+    <!-- Único elemento de áudio, src trocado pelo JS -->
+    <audio id="music" loop>
+      <source id="music-source" src="../src/assets_musics_normal-world.mpeg" type="audio/mpeg">
+    </audio>
+
+    <div class="header-content">
+
+      <img
+        class="logo invert-element"
+        src="../src/logo.svg"
+        alt="Mundo Invertido — Semana Frontend DIO"
+      >
+
+      <p class="invert-element">
+        Uma jornada para quem não tem medo do desconhecido. O caminho para o
+        Mundo Invertido é incerto, repleto de obstáculos e perigos. Porém, a
+        recompensa é grande: salvar Hawkins e o mundo todo das garras de Vecna.
+        Você está preparado?
+      </p>
+
+      <!-- WORLD STAGE: dois slots verticais com os personagens -->
+      <div id="world-stage" aria-label="Personagens dos mundos normal e invertido">
+
+        <p class="world-indicator" id="world-indicator">// mundo normal — Hawkins, Indiana</p>
+
+        <!-- Slot superior: kids on the bike (estado inicial) -->
+        <div class="world-slot" id="slot-top">
+          <img
+            id="kids-img"
+            src="../src/kids-on-the-bike.svg"
+            alt="Crianças na bicicleta — mundo normal"
+          >
+        </div>
+
+        <!-- Slot inferior: monstro espelhado (estado inicial) -->
+        <div class="world-slot" id="slot-bottom">
+          <img
+            id="monster-img"
+            src="../src/inverted-world-monster.svg"
+            alt="Monstro do mundo invertido — espelhado"
+          >
+        </div>
+
+      </div><!-- /#world-stage -->
+
+      <button id="switch-theme-button" aria-label="Alternar entre mundo normal e mundo invertido">
+        Inverter Mundos
+      </button>
+
+    </div><!-- /.header-content -->
+
+  </header>
+
+  <!-- ══════════ MAIN ══════════ -->
+  <main>
+
+    <!-- Seção 1: O Mundo Invertido -->
+    <section id="section-inverted-world">
+      <div class="container">
+        <div class="section-texts">
+          <h1>O Mundo Invertido</h1>
+          <p>
+            O Mundo Invertido parece uma cópia do nosso mundo, mas com criaturas
+            horrendas, tempestades assustadoras, muita escuridão e entidades
+            malignas. Um reino controlado por Vecna, que tem planos de trazer
+            tudo isso ao nosso mundo.
+          </p>
+        </div>
+        <img
+          class="invert-element"
+          src="../src/inverted-world.png"
+          alt="Imagem ilustrativa do Mundo Invertido"
+        >
+      </div>
+    </section>
+
+    <!-- Seção 2: Trailer -->
+    <section id="section-trailer">
+      <div class="container">
+        <div class="video-frame" aria-label="Trailer de Stranger Things Vol. 4">
+          <iframe
+            src="https://www.youtube.com/embed/sBEvEcpnG7k?si=8SbyBNN6uX9TKmOD"
+            title="Stranger Things Vol. 4 — Trailer Oficial"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="section-texts">
+          <h2>Stranger Things Vol. 4</h2>
+          <p>
+            Mais experientes, os heróis de Stranger Things também precisam
+            enfrentar desafios maiores do que nunca e tomar decisões que vão
+            mudar suas vidas para sempre. Confira ao lado o trailer da quarta
+            temporada.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 3: Galeria -->
+    <section id="section-gallery">
+      <div class="container">
+        <h2>A segunda série mais assistida da Netflix</h2>
+        <ul class="gallery-list" role="list" aria-label="Galeria de imagens da série">
+          <li class="gallery-item invert-element">
+            <img src="../src/serie-image-01.png" alt="Vecna">
+          </li>
+          <li class="gallery-item invert-element">
+            <img src="../src/serie-image-02.png" alt="Os amigos de Eleven">
+          </li>
+          <li class="gallery-item invert-element">
+            <img src="../src/serie-image-03.png" alt="Eleven assustada">
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Seção 4: Formulário D&D -->
+    <section id="section-form">
+      <div class="container">
+        <h2>O Clube Dungeons &amp; Dragons</h2>
+        <p>
+          Para deter Vecna, os heróis de Stranger Things também precisam de você.
+          O Clube de D&amp;D mais famoso de Hawkins está com vagas abertas para
+          sua próxima aventura. Se você é destemido e não tem medo de rolar o D20,
+          é hora de se inscrever.
+        </p>
+
+        <div class="form-wrapper">
+          <h3>Entre para o clube e tenha experiências de <span>outro mundo</span></h3>
+          <div class="form-box">
+            <form id="subscriptionForm" novalidate>
+              <label for="txtName">Nome Completo</label>
+              <input type="text" id="txtName" name="name" autocomplete="name" required>
+
+              <label for="txtEmail">E-mail</label>
+              <input type="email" id="txtEmail" name="email" autocomplete="email" required>
+
+              <label for="txtLevel">Level (1–20)</label>
+              <input type="number" id="txtLevel" name="level" min="1" max="20" required>
+
+              <label for="txtCharacter">Personagem</label>
+              <textarea id="txtCharacter" name="character" rows="6" required></textarea>
+
+              <button type="submit">Me Inscrever</button>
+            </form>
+            <div id="formMsg" class="form-msg" role="alert" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══════════ FOOTER ══════════ -->
+  <footer>
+    <p>
+      Projeto construído para fins didáticos · HTML, CSS e JavaScript aprendidos na DIO.
+    </p>
+    <img src="../src/lamps.png" alt="Lâmpadas do Mundo Invertido">
+  </footer>
+
+  <script src="engine.js"></script>
+</body>
+</html>
